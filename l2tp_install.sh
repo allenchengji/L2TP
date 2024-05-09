@@ -4,13 +4,13 @@ export PATH
 #=======================================================================#
 #   System Supported:  CentOS 6+ / Debian 7+ / Ubuntu 12+               #
 #   Description: L2TP VPN Auto Installer                                #
-#   Author: Yang	                                            #
-#   Intro:  https://qq008.cn/		                                    #
+#   Author: AllenGPT <i@AllenGPT.com>                                   #
+#   Intro:  https://AllenGPT.com/448.html                               #
 #=======================================================================#
 cur_dir=`pwd`
 
-libreswan_filename="libreswan-3.20"
-download_root_url="http://dl.teddysun.com/files"
+libreswan_filename="libreswan-3.27"
+download_root_url="https://dl.lamp.sh/files"
 
 rootness(){
     if [[ $EUID -ne 0 ]]; then
@@ -227,12 +227,12 @@ preinstall_l2tp(){
     [ -z ${iprange} ] && iprange="192.168.18"
 
     echo "Please enter PSK:"
-    read -p "(Default PSK: teddysun.com):" mypsk
-    [ -z ${mypsk} ] && mypsk="teddysun.com"
+    read -p "(Default PSK: AllenGPT.com):" mypsk
+    [ -z ${mypsk} ] && mypsk="AllenGPT.com"
 
     echo "Please enter Username:"
-    read -p "(Default Username: teddysun):" username
-    [ -z ${username} ] && username="teddysun"
+    read -p "(Default Username: AllenGPT):" username
+    [ -z ${username} ] && username="AllenGPT"
 
     password=`rand`
     echo "Please enter ${username}'s password:"
@@ -362,7 +362,7 @@ conn l2tp-psk-nonat
     dpddelay=40
     dpdtimeout=130
     dpdaction=clear
-    sha2-truncbug=yes
+#   sha2-truncbug=yes
 EOF
 
     cat > /etc/ipsec.secrets<<EOF
@@ -421,7 +421,12 @@ compile_install(){
     tar -zxf ${libreswan_filename}.tar.gz
 
     cd ${cur_dir}/l2tp/${libreswan_filename}
-    echo "WERROR_CFLAGS =" > Makefile.inc.local
+        cat > Makefile.inc.local <<'EOF'
+WERROR_CFLAGS =
+USE_DNSSEC = false
+USE_DH31 = false
+USE_GLIBC_KERN_FLIP_HEADERS = true
+EOF
     make programs && make install
 
     /usr/local/sbin/ipsec --version >/dev/null 2>&1
@@ -649,8 +654,8 @@ finally(){
     echo "###############################################################"
     echo "# L2TP VPN Auto Installer                                     #"
     echo "# System Supported: CentOS 6+ / Debian 7+ / Ubuntu 12+        #"
-    echo "# Intro: https://qq008.cn/                                    #"
-    echo "# Author: YangDeShuai           <mail : admin@qq008.cn>       #"
+    echo "# Intro: https://teddysun.com/448.html                        #"
+    echo "# Author: Teddysun <i@teddysun.com>                           #"
     echo "###############################################################"
     echo "If there is no [FAILED] above, you can connect to your L2TP "
     echo "VPN Server with the default Username/Password is below:"
@@ -666,7 +671,7 @@ finally(){
     echo "l2tp -l (List all users)"
     echo "l2tp -m (Modify a user password)"
     echo
-    echo "Welcome to visit our website: https://teddysun.com/448.html"
+    echo "Welcome to visit our website: https://AllenGPT.com/448.html"
     echo "Enjoy it!"
     echo
 }
@@ -678,8 +683,8 @@ l2tp(){
     echo "###############################################################"
     echo "# L2TP VPN Auto Installer                                     #"
     echo "# System Supported: CentOS 6+ / Debian 7+ / Ubuntu 12+        #"
-    echo "# Intro: https://qq008.cn/                                    #"
-    echo "# Author: YangDeShuai           <mail : admin@qq008.cn>       #"
+    echo "# Intro: https://teddysun.com/448.html                        #"
+    echo "# Author: Teddysun <i@teddysun.com>                           #"
     echo "###############################################################"
     echo
     rootness
